@@ -1,109 +1,77 @@
+/**
+ *Submitted for verification at BscScan.com on 2025-12-22
+*/
 
-# Minimal BEP-20 Token with Burn Function
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
 
-This repository contains a minimal and transparent implementation of a BEP-20 compatible token smart contract written in Solidity.
+contract TORK {
+    string public name = "TORK";
+    string public symbol = "TORK";
+    uint8 public decimals = 18;
 
-The contract is designed to be simple, auditable, and easy to understand, without complex mechanics or hidden logic.
+    uint256 public totalSupply;
+    address public owner;
 
----
+    mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
 
-## 📌 Features
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-- BEP-20 compatible
-- Fixed total supply
-- No mint function
-- Burn functionality
-- Allowance & approval system
-- Ownership renouncement support
-- Simple and readable codebase
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
 
----
+    constructor(uint256 _totalSupply) {
+        owner = msg.sender;
+        totalSupply = _totalSupply * 10 ** decimals;
+        balanceOf[msg.sender] = totalSupply;
 
-## 📜 Contract Overview
+        emit Transfer(address(0), msg.sender, totalSupply);
+    }
 
-The smart contract includes the following core components:
+    function transfer(address to, uint256 value) external returns (bool) {
+        require(balanceOf[msg.sender] >= value, "Balance low");
+        balanceOf[msg.sender] -= value;
+        balanceOf[to] += value;
 
-- Token transfers
-- Allowance-based transfers (`approve` / `transferFrom`)
-- Token burning (reduces total supply)
-- Ownership control with renouncement option
+        emit Transfer(msg.sender, to, value);
+        return true;
+    }
 
-The contract does **not** include:
-- Transaction fees
-- Reflections
-- Rebasing
-- Pausing or blacklisting
-- Hidden privileged functions
+    function approve(address spender, uint256 value) external returns (bool) {
+        allowance[msg.sender][spender] = value;
 
----
+        emit Approval(msg.sender, spender, value);
+        return true;
+    }
 
-## 🔥 Burn Mechanism
+    function transferFrom(address from, address to, uint256 value) external returns (bool) {
+        require(balanceOf[from] >= value, "Balance low");
+        require(allowance[from][msg.sender] >= value, "Allowance low");
 
-Token holders can permanently reduce the circulating supply by calling the `burn` function.
+        allowance[from][msg.sender] -= value;
+        balanceOf[from] -= value;
+        balanceOf[to] += value;
 
-- Burned tokens are sent to the zero address
-- Total supply is reduced accordingly
-- All burn events are recorded on-chain
+        emit Transfer(from, to, value);
+        return true;
+    }
 
----
+    function burn(uint256 value) external {
+        require(balanceOf[msg.sender] >= value, "Balance low");
 
-## 🔐 Ownership
+        balanceOf[msg.sender] -= value;
+        totalSupply -= value;
 
-- The contract is deployed with an initial owner
-- The owner can renounce ownership permanently
-- After renouncement, no owner-only functions remain
-- The contract becomes fully decentralized
+        emit Transfer(msg.sender, address(0), value);
+    }
 
----
-
-## 🧾 Main Functions
-
-### `transfer(address to, uint256 value)`
-Transfers tokens from the caller to another address.
-
-### `approve(address spender, uint256 value)`
-Approves a spender to use a specified amount of tokens.
-
-### `transferFrom(address from, address to, uint256 value)`
-Transfers tokens on behalf of another address using allowance.
-
-### `burn(uint256 value)`
-Permanently removes tokens from circulation.
-
-### `renounceOwnership()`
-Removes ownership privileges permanently.
-
----
-
-## 🔍 Security Notes
-
-- Solidity version `^0.8.x` (built-in overflow protection)
-- No minting capability
-- No upgradeability
-- No external dependencies
-- Logic kept intentionally minimal for auditability
-
----
-
-## 🛠 Usage
-
-This contract can be used as:
-- A learning reference
-- A base for simple token projects
-- A starting point for further customization
-
-Before deploying to mainnet, thorough testing and review are strongly recommended.
-
----
-
-## ⚠️ Disclaimer
-
-This repository is provided for educational and informational purposes only.  
-It does not constitute financial advice.  
-Use at your own risk.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
+    function renounceOwnership() external onlyOwner {
+        emit OwnershipTransferred(owner, address(0));
+        owner = address(0);
+    }
+}
