@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.27;
 
-contract TORK {
+contract BEP20 {
     string public name = "your_token_name";
     string public symbol = "your_token_symbol";
     uint8 public decimals = 18;
