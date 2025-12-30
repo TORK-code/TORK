@@ -2,8 +2,8 @@
 pragma solidity ^0.8.27;
 
 contract TORK {
-    string public name = "TORK";
-    string public symbol = "TORK";
+    string public name = "your_token_name";
+    string public symbol = "your_token_symbol";
     uint8 public decimals = 18;
 
     uint256 public totalSupply;
