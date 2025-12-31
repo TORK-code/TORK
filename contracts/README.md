@@ -1,94 +1,117 @@
-TORK Staking Contract
+Minimal Staking Contract for BEP-20 Tokens
 
-This repository contains the source code for the TORK staking smart contract, designed to distribute staking rewards in a transparent, time-based, and permissionless manner.
+This repository contains a minimal, permissionless, and transparent staking smart contract written in Solidity.
 
-The contract is written in Solidity and targets Binance Smart Chain (BSC) compatible networks.
+The contract enables users to stake BEP-20 compatible tokens and earn rewards over time based on a fixed, time-based emission model. It is intentionally designed to remain simple, predictable, and fully auditable.
 
-Overview
-
-The TORK staking contract allows users to stake TORK tokens and earn rewards over time based on:
-
-The amount of tokens staked
-
-The duration of staking
-
-A fixed reward emission rate
-
-Rewards are distributed per second and are shared proportionally among all active stakers.
-
-Key Characteristics
+📌 Features
 
 Permissionless staking
 
-No owner privileges
+Time-based reward distribution
 
-No withdrawal or emergency admin functions
+Fixed reward emission rate
 
-Immutable reward logic
+Proportional reward sharing
+
+No owner or admin privileges
+
+No withdrawal or emergency controls
 
 Fully on-chain reward accounting
 
-Once deployed, the contract operates autonomously according to its code.
+Simple and readable codebase
 
-Reward Model
+📜 Contract Overview
+
+The staking contract allows users to:
+
+Stake tokens into the contract
+
+Earn rewards distributed per second
+
+Claim rewards at any time
+
+Unstake partially or fully
+
+Rewards are distributed proportionally based on each user’s share of the total staked amount.
+
+The contract does not include:
+
+Owner or admin intervention
+
+Emergency withdrawal functions
+
+Reward manipulation mechanisms
+
+Upgradeability or proxy patterns
+
+Hidden or privileged logic
+
+⏱ Reward Model
 
 Reward Rate: 1 token per second
 
-Daily Emission: 86,400 tokens
-
-Distribution Method: Proportional to stake share
+Daily Distribution: 86,400 tokens
 
 Reward Source: Tokens pre-funded into the contract
 
-If the contract runs out of reward tokens, reward distribution automatically stops.
+Distribution Method: Proportional to stake share
 
-How It Works
-Pool Accounting
+If the reward token balance inside the contract is depleted, reward distribution automatically stops.
 
-The contract uses an accRewardPerShare model to track rewards efficiently:
+⚙️ How It Works
 
-Rewards accumulate over time
+The contract uses an accumulator-based accounting model (accRewardPerShare) to track rewards efficiently.
 
-Each user’s pending reward is calculated based on their share of the total staked amount
+Rewards accumulate continuously over time
 
-Rewards are updated whenever users interact with the contract
+Pool state updates only when users interact
 
-Functions
+Each user’s rewards are calculated based on:
+
+Amount staked
+
+Time staked
+
+Total pool size
+
+This approach ensures fair and gas-efficient reward distribution.
+
+🧾 Main Functions
 stake(uint256 amount)
 
-Stakes the specified amount of tokens
-
-Automatically claims pending rewards before updating the stake
+Stakes the specified amount of tokens into the pool.
+Automatically claims any pending rewards before updating the stake.
 
 unstake(uint256 amount)
 
-Withdraws staked tokens
-
-Claims any pending rewards at the same time
+Withdraws a specified amount of staked tokens.
+Pending rewards are claimed during the process.
 
 claim()
 
-Claims accumulated rewards without unstaking tokens
+Claims accumulated rewards without unstaking tokens.
 
 pendingReward(address user)
 
-View function to check unclaimed rewards
+View function that returns the user’s unclaimed rewards.
 
-Security Design
+🔐 Security Design
 
-No owner or admin functions
+No owner or admin role
 
-No ability to withdraw or reclaim user funds
+No ability to withdraw user funds
 
-No minting or reward manipulation
+No reward rate modification
 
-Reward calculation protected against overflow
+No minting or external token creation
 
-Safe arithmetic under Solidity ^0.8.x
+Solidity ^0.8.x overflow protection
 
-Tokens sent into the contract cannot be withdrawn by the deployer and are used exclusively for reward distribution.
+Tokens deposited into the contract cannot be reclaimed by the deployer and are used exclusively for reward distribution.
 
-Token Requirements
+🔗 Token Requirements
 
 The staking contract expects the token to be:
 
@@ -98,16 +121,16 @@ Using 18 decimals
 
 Supporting transfer and transferFrom
 
-Deployment
+🛠 Deployment
 
-The token address must be provided during deployment:
+The token address is provided at deployment time:
 
 constructor(address _token)
 
 
 Once deployed, the token address is immutable.
 
-Transparency
+🔍 Transparency
 
 Fully open-source
 
@@ -115,17 +138,10 @@ Verifiable on-chain
 
 Community auditable
 
-Deterministic behavior
+Deterministic and predictable behavior
 
-Users are encouraged to review the code before interacting.
+Users are encouraged to review the source code before interacting with the contract.
 
-Disclaimer
+📄 License
 
-This smart contract is provided as-is, without warranties of any kind.
-
-The contract does not represent a financial product or investment instrument.
-Users interact with the contract at their own risk and responsibility.
-
-License
-
-MIT License
+This project is licensed under the MIT License.
