@@ -1,147 +1,109 @@
-Minimal Staking Contract for BEP-20 Tokens
+# Minimal BEP-20 Staking Contract
 
-This repository contains a minimal, permissionless, and transparent staking smart contract written in Solidity.
+This repository contains a minimal and transparent staking smart contract
+designed for BEP-20 compatible tokens, written in Solidity.
 
-The contract enables users to stake BEP-20 compatible tokens and earn rewards over time based on a fixed, time-based emission model. It is intentionally designed to remain simple, predictable, and fully auditable.
+The contract is intentionally designed to be simple, auditable, and predictable,
+without complex mechanics or privileged control.
 
-📌 Features
+---
 
-Permissionless staking
+## 📌 Features
 
-Time-based reward distribution
+- Permissionless staking
+- Time-based reward distribution
+- Fixed reward emission rate
+- Proportional reward sharing
+- No owner or admin privileges
+- No emergency withdrawal functions
+- Simple and readable codebase
 
-Fixed reward emission rate
+---
 
-Proportional reward sharing
-
-No owner or admin privileges
-
-No withdrawal or emergency controls
-
-Fully on-chain reward accounting
-
-Simple and readable codebase
-
-📜 Contract Overview
+## 📜 Contract Overview
 
 The staking contract allows users to:
 
-Stake tokens into the contract
+- Stake supported tokens
+- Earn rewards over time
+- Claim rewards independently
+- Unstake partially or fully
 
-Earn rewards distributed per second
+Rewards are distributed proportionally based on each user’s share
+of the total staked amount.
 
-Claim rewards at any time
+The contract does **not** include:
 
-Unstake partially or fully
+- Owner or admin intervention
+- Reward manipulation logic
+- Emergency fund access
+- Upgradeability or proxy patterns
+- Hidden privileged functions
 
-Rewards are distributed proportionally based on each user’s share of the total staked amount.
+---
 
-The contract does not include:
+## ⏱ Reward Mechanism
 
-Owner or admin intervention
+Rewards are distributed continuously based on time and staking participation.
 
-Emergency withdrawal functions
+- Reward Rate: `1 token per second`
+- Daily Distribution: `86,400 tokens`
+- Distribution Method: Proportional to stake share
+- Reward Source: Tokens pre-funded into the contract
 
-Reward manipulation mechanisms
+If the contract’s reward balance is depleted,
+reward distribution automatically stops.
 
-Upgradeability or proxy patterns
+---
 
-Hidden or privileged logic
+## 🧾 Main Functions
 
-⏱ Reward Model
+### `stake(uint256 amount)`
 
-Reward Rate: 1 token per second
-
-Daily Distribution: 86,400 tokens
-
-Reward Source: Tokens pre-funded into the contract
-
-Distribution Method: Proportional to stake share
-
-If the reward token balance inside the contract is depleted, reward distribution automatically stops.
-
-⚙️ How It Works
-
-The contract uses an accumulator-based accounting model (accRewardPerShare) to track rewards efficiently.
-
-Rewards accumulate continuously over time
-
-Pool state updates only when users interact
-
-Each user’s rewards are calculated based on:
-
-Amount staked
-
-Time staked
-
-Total pool size
-
-This approach ensures fair and gas-efficient reward distribution.
-
-🧾 Main Functions
-stake(uint256 amount)
-
-Stakes the specified amount of tokens into the pool.
+Stakes the specified amount of tokens into the contract.
 Automatically claims any pending rewards before updating the stake.
 
-unstake(uint256 amount)
+### `unstake(uint256 amount)`
 
-Withdraws a specified amount of staked tokens.
+Withdraws the specified amount of staked tokens.
 Pending rewards are claimed during the process.
 
-claim()
+### `claim()`
 
 Claims accumulated rewards without unstaking tokens.
 
-pendingReward(address user)
+### `pendingReward(address user)`
 
-View function that returns the user’s unclaimed rewards.
+Returns the amount of unclaimed rewards for a given address.
 
-🔐 Security Design
+---
 
-No owner or admin role
+## 🔐 Security Design
 
-No ability to withdraw user funds
+- No owner or admin role
+- No ability to withdraw user funds
+- No reward rate modification
+- No minting or external token creation
+- Solidity `^0.8.x` built-in overflow protection
 
-No reward rate modification
+Tokens deposited into the contract cannot be reclaimed by the deployer
+and are used exclusively for reward distribution.
 
-No minting or external token creation
+---
 
-Solidity ^0.8.x overflow protection
-
-Tokens deposited into the contract cannot be reclaimed by the deployer and are used exclusively for reward distribution.
-
-🔗 Token Requirements
+## 🔗 Token Requirements
 
 The staking contract expects the token to be:
 
-BEP-20 / ERC-20 compatible
+- BEP-20 / ERC-20 compatible
+- Using 18 decimals
+- Supporting `transfer` and `transferFrom`
 
-Using 18 decimals
+---
 
-Supporting transfer and transferFrom
+## 🛠 Deployment
 
-🛠 Deployment
+The token address must be provided during deployment:
 
-The token address is provided at deployment time:
-
+```solidity
 constructor(address _token)
-
-
-Once deployed, the token address is immutable.
-
-🔍 Transparency
-
-Fully open-source
-
-Verifiable on-chain
-
-Community auditable
-
-Deterministic and predictable behavior
-
-Users are encouraged to review the source code before interacting with the contract.
-
-📄 License
-
-This project is licensed under the MIT License.
