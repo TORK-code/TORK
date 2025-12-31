@@ -7,7 +7,7 @@ interface IERC20 {
     function balanceOf(address account) external view returns (uint256);
 }
 
-contract TORKStaking {
+contract Staking {
 
     IERC20 public immutable token;
 
